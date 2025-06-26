@@ -158,14 +158,17 @@ def build_date_filter(norm_lower: str,
     return {}
 
 
-# Extract genre slugs from a game record
+# Safely extract genre slugs even if g['genres'] is None
 def all_genre_slugs_of_game(g: Dict[str, Any]) -> set[str]:
-    return {x["slug"] for x in g.get("genres", [])}
+    genres = g.get("genres") or []
+    return { x.get("slug") for x in genres if x and x.get("slug") }
 
 
-# Extract tag slugs from a game record
+# Safely extract tag slugs even if g['tags'] is None
 def all_tag_slugs_of_game(g: Dict[str, Any]) -> set[str]:
-    return {x["slug"] for x in g.get("tags", [])}
+    tags = g.get("tags") or []
+    return { x.get("slug") for x in tags if x and x.get("slug") }
+
 
 # FastAPI startup / caches
 @app.on_event("startup")
